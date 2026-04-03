@@ -12,7 +12,8 @@
         <a href="/#news" class="header__nav-link" @click="closeMenu">Новини</a>
         <a href="/#vacancies" class="header__nav-link" @click="closeMenu">Вакансії</a>
         <a href="/#contacts" class="header__nav-link" @click="closeMenu">Контакти</a>
-        <a href="/#contacts" class="btn btn--primary header__cta" @click="closeMenu">Звернення</a>
+        <!--        <a href="/#contacts" class="btn btn--primary header__cta" @click="closeMenu">Звернення</a> -->
+        <a href="/#contacts" class="header__nav-link" @click="closeMenu">Звернення</a>
       </nav>
 
       <button
