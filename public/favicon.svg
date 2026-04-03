@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect width="32" height="32" rx="6" fill="#1a56a4"/>
+  <g fill="#f5c400">
+    <!-- trident stem -->
+    <rect x="15" y="18" width="2" height="8" rx="1"/>
+    <!-- trident base -->
+    <rect x="11" y="24" width="10" height="2" rx="1"/>
+    <!-- trident center prong -->
+    <rect x="15" y="8" width="2" height="10" rx="1"/>
+    <!-- trident left prong -->
+    <path d="M10 8 h2 v7 a1 1 0 0 1-2 0 Z" rx="1"/>
+    <!-- trident right prong -->
+    <path d="M20 8 h2 v7 a1 1 0 0 1-2 0 Z" rx="1"/>
+    <!-- trident left arm -->
+    <rect x="10" y="8" width="5" height="2" rx="1"/>
+    <!-- trident right arm -->
+    <rect x="17" y="8" width="5" height="2" rx="1"/>
+  </g>
+</svg>
