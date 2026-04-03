@@ -1,19 +1,34 @@
 <template>
   <header class="header" :class="{ 'header--scrolled': isScrolled }">
     <div class="container header__inner">
-      <RouterLink to="/" class="header__logo">
-        <img src="@/assets/logo.svg" alt="ДП «Цифрове»" width="160" height="48" />
-      </RouterLink>
+      <div class="header__left">
+        <RouterLink to="/" class="header__logo" @click="closeMenu">
+          <img src="@/assets/logo.svg" alt="ДП «Цифрове»" width="160" height="48" />
+        </RouterLink>
 
-      <nav class="header__nav" :class="{ 'header__nav--open': menuOpen }">
-        <RouterLink to="/about" class="header__nav-link" @click="closeMenu">Про нас</RouterLink>
-        <RouterLink to="/services" class="header__nav-link" @click="closeMenu">Послуги</RouterLink>
-        <RouterLink to="/projects" class="header__nav-link" @click="closeMenu">Проєкти</RouterLink>
-        <RouterLink to="/" hash="#news" class="header__nav-link" @click="closeMenu">Новини</RouterLink>
-        <RouterLink to="/" hash="#vacancies" class="header__nav-link" @click="closeMenu">Вакансії</RouterLink>
-        <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu">Контакти</RouterLink>
-        <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu">Звернення</RouterLink>
-      </nav>
+        <nav class="header__nav" :class="{ 'header__nav--open': menuOpen }">
+          <RouterLink to="/about" class="header__nav-link" @click="closeMenu">Про нас</RouterLink>
+          <RouterLink to="/services" class="header__nav-link" @click="closeMenu"
+            >Послуги</RouterLink
+          >
+          <RouterLink to="/projects" class="header__nav-link" @click="closeMenu"
+            >Проєкти</RouterLink
+          >
+
+
+          <RouterLink to="/news" class="header__nav-link" @click="closeMenu">Новини</RouterLink>
+          <RouterLink to="/vacancies" class="header__nav-link" @click="closeMenu"
+            >Вакансії</RouterLink
+          >
+
+          <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu"
+            >Контакти</RouterLink
+          >
+          <RouterLink to="/appeal" class="header__nav-link" @click="closeMenu"
+            >Звернення</RouterLink
+          >
+        </nav>
+      </div>
 
       <button
         class="header__burger"
@@ -88,6 +103,15 @@ onUnmounted(() => {
   gap: var(--space-8);
 }
 
+/* NEW: left-align logo + nav as one block */
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-width: 0;
+  flex: 1;
+}
+
 .header__logo {
   flex-shrink: 0;
   display: flex;
@@ -102,7 +126,17 @@ onUnmounted(() => {
 .header__nav {
   display: flex;
   align-items: center;
+  justify-content: flex-start; /* left aligned */
   gap: var(--space-1);
+  min-width: 0;
+  flex: 1;
+}
+
+.header__separator {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  padding: 0 var(--space-2);
+  user-select: none;
 }
 
 .header__nav-link {
@@ -163,6 +197,11 @@ onUnmounted(() => {
 @media (max-width: 900px) {
   .header__burger {
     display: flex;
+  }
+
+  /* hide separators in mobile drawer */
+  .header__separator {
+    display: none;
   }
 
   .header__nav {
