@@ -1,19 +1,25 @@
 <template>
   <header class="header" :class="{ 'header--scrolled': isScrolled }">
     <div class="container header__inner">
-      <RouterLink to="/" class="header__logo">
+      <RouterLink to="/" class="header__logo" @click="closeMenu">
         <img src="@/assets/logo.svg" alt="ДП «Цифрове»" width="160" height="48" />
       </RouterLink>
 
       <nav class="header__nav" :class="{ 'header__nav--open': menuOpen }">
-        <a href="/#about" class="header__nav-link" @click="closeMenu">Про нас</a>
-        <a href="/#services" class="header__nav-link" @click="closeMenu">Послуги</a>
-        <a href="/#projects" class="header__nav-link" @click="closeMenu">Проєкти</a>
-        <a href="/#news" class="header__nav-link" @click="closeMenu">Новини</a>
-        <a href="/#vacancies" class="header__nav-link" @click="closeMenu">Вакансії</a>
-        <a href="/#contacts" class="header__nav-link" @click="closeMenu">Контакти</a>
-        <!--        <a href="/#contacts" class="btn btn--primary header__cta" @click="closeMenu">Звернення</a> -->
-        <a href="/#contacts" class="header__nav-link" @click="closeMenu">Звернення</a>
+        <RouterLink to="/about" class="header__nav-link" @click="closeMenu">Про нас</RouterLink>
+        <RouterLink to="/services" class="header__nav-link" @click="closeMenu">Послуги</RouterLink>
+        <RouterLink to="/projects" class="header__nav-link" @click="closeMenu">Проєкти</RouterLink>
+
+        <!-- UPDATED: separate pages -->
+        <RouterLink to="/news" class="header__nav-link" @click="closeMenu">Новини</RouterLink>
+        <RouterLink to="/vacancies" class="header__nav-link" @click="closeMenu"
+          >Вакансії</RouterLink
+        >
+
+        <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu">Контакти</RouterLink>
+        <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu"
+          >Звернення</RouterLink
+        >
       </nav>
 
       <button

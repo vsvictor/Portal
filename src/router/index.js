@@ -6,6 +6,8 @@ import AboutView from '@/views/AboutView.vue'
 import ServicesView from '@/views/ServicesView.vue'
 import ProjectsView from '@/views/ProjectsView.vue'
 import ContactsView from '@/views/ContactsView.vue'
+import NewsDetailView from '@/views/NewsDetailView.vue'
+import VacancyDetailView from '@/views/VacancyDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,18 +32,31 @@ const router = createRouter({
       name: 'projects',
       component: ProjectsView,
     },
+
+    // list pages
+    {
+      path: '/news',
+      name: 'news',
+      component: NewsView,
+    },
+    {
+      path: '/vacancies',
+      name: 'vacancies',
+      component: VacanciesView,
+    },
+
+    // detail pages
     {
       path: '/news/:id',
       name: 'news-detail',
-      //component: () => import('@/views/NewsDetailView.vue'),
-      component: NewsView,
+      component: NewsDetailView,
     },
     {
       path: '/vacancies/:id',
       name: 'vacancy-detail',
-      //component: () => import('@/views/VacancyDetailView.vue'),
-      component: VacanciesView,
+      component: VacancyDetailView,
     },
+
     {
       path: '/contacts',
       name: 'contacts',
