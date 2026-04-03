@@ -1,7 +1,7 @@
 <template>
   <header class="header" :class="{ 'header--scrolled': isScrolled }">
     <div class="container header__inner">
-      <RouterLink to="/" class="header__logo" @click="closeMenu">
+      <RouterLink to="/" class="header__logo">
         <img src="@/assets/logo.svg" alt="ДП «Цифрове»" width="160" height="48" />
       </RouterLink>
 
@@ -9,17 +9,10 @@
         <RouterLink to="/about" class="header__nav-link" @click="closeMenu">Про нас</RouterLink>
         <RouterLink to="/services" class="header__nav-link" @click="closeMenu">Послуги</RouterLink>
         <RouterLink to="/projects" class="header__nav-link" @click="closeMenu">Проєкти</RouterLink>
-
-        <!-- UPDATED: separate pages -->
-        <RouterLink to="/news" class="header__nav-link" @click="closeMenu">Новини</RouterLink>
-        <RouterLink to="/vacancies" class="header__nav-link" @click="closeMenu"
-          >Вакансії</RouterLink
-        >
-
+        <RouterLink to="/" hash="#news" class="header__nav-link" @click="closeMenu">Новини</RouterLink>
+        <RouterLink to="/" hash="#vacancies" class="header__nav-link" @click="closeMenu">Вакансії</RouterLink>
         <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu">Контакти</RouterLink>
-        <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu"
-          >Звернення</RouterLink
-        >
+        <RouterLink to="/contacts" class="header__nav-link" @click="closeMenu">Звернення</RouterLink>
       </nav>
 
       <button
