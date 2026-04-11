@@ -1,0 +1,22 @@
+services:
+  portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dp-tsyfrove-portal
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"    # HTTP/3 / QUIC — обов'язковий UDP-порт!
+    volumes:
+      # Caddy зберігає TLS-сертифікати та стан між перезапусками
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - TZ=Europe/Kyiv
+
+volumes:
+  caddy_data:
+  caddy_config:
+

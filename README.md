@@ -28,14 +28,19 @@ npm install
 # Запустити у режимі розробки
 npm run dev
 
-# Відкрити http://localhost:5173
+# Відкрити https://localhost:5173
 ```
+
+## HTTP/3
+
+- У браузері протокол HTTP/3 обирається автоматично (TLS/ALPN/QUIC), а не JavaScript HTTP-клієнтом.
+- `fetch` у фронтенді залишається стандартним клієнтом; для HTTP/3 критично, щоб edge-проксі/сервер (Caddy) працював через HTTPS і мав відкритий `443/udp`.
 
 ## 🏗️ Команди
 
 | Команда           | Опис                                         |
 |-------------------|----------------------------------------------|
-| `npm run dev`     | Запуск dev-сервера (http://localhost:5173)   |
+| `npm run dev`     | Запуск dev-сервера (https://localhost:5173)  |
 | `npm run build`   | Збірка production версії у папку `dist/`    |
 | `npm run preview` | Попередній перегляд production збірки        |
 | `npm run lint`    | Перевірка та виправлення коду (ESLint)       |

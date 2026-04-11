@@ -42,8 +42,8 @@
           </ul>
 
           <div class="about__actions">
-            <a href="#contacts" class="btn btn--primary">Зв'язатися з нами</a>
-            <a href="#services" class="btn btn--outline">Наші послуги</a>
+            <RouterLink to="/contacts" class="btn btn--primary">Зв'язатися з нами</RouterLink>
+            <RouterLink to="/services" class="btn btn--outline">Наші послуги</RouterLink>
           </div>
         </div>
 

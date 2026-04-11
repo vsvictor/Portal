@@ -9,12 +9,23 @@
       </RouterView>
     </main>
     <AppFooter />
+    <LoginModal />
   </div>
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import LoginModal from '@/components/LoginModal.vue'
+import { useAuth } from '@/composables/useAuth.js'
+
+const { checkAuth } = useAuth()
+
+// Перевірка автентифікації при першому завантаженні додатку
+onMounted(() => {
+  checkAuth()
+})
 </script>
 
 <style>

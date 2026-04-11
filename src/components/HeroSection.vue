@@ -1,10 +1,10 @@
 <template>
   <section id="hero" class="hero">
     <div class="hero__bg">
-      <div class="hero__circle hero__circle--1"></div>
+<!--      <div class="hero__circle hero__circle--1"></div>
       <div class="hero__circle hero__circle--2"></div>
       <div class="hero__circle hero__circle--3"></div>
-      <div class="hero__grid"></div>
+      <div class="hero__grid"></div> -->
     </div>
 
     <div class="container hero__content">
@@ -24,8 +24,8 @@
       </p>
 
       <div class="hero__actions animate-fade-in-up delay-300">
-        <a href="#services" class="btn btn--secondary btn--lg">Наші послуги</a>
-        <a href="#contacts" class="btn btn--outline-white btn--lg">Зв'язатися з нами</a>
+        <RouterLink to="/services" class="btn btn--secondary btn--lg">Наші послуги</RouterLink>
+        <RouterLink to="/contacts" class="btn btn--outline-white btn--lg">Зв'язатися з нами</RouterLink>
       </div>
 
       <div class="hero__stats animate-fade-in-up delay-400">

@@ -1,0 +1,69 @@
+# ============================================================
+#  Caddyfile — HTTP/3 (QUIC) сервер для ДП «Цифрове» Portal
+#
+#  HTTP/3 увімкнений за замовчуванням у Caddy 2.7+
+#  QUIC використовує UDP порт 443 → відкрийте його у firewall/Docker
+#
+#  Для production із реальним доменом:
+#    замініть ":443" на "portal.digital.gov.ua"
+#    і видаліть директиву "tls internal"
+# ============================================================
+
+{
+  # Вимикаємо адмін-сокет для production-безпеки
+  admin off
+
+  # Журнал помилок
+  log {
+    output stdout
+    format json
+    level INFO
+  }
+}
+
+# HTTP → HTTPS редирект (308 Permanent)
+:80 {
+  redir https://{host}{uri} 308
+}
+
+# HTTPS / HTTP/2 / HTTP/3 (QUIC)
+:443 {
+  root * /usr/share/caddy
+
+  # Auth API (same-origin для frontend). Клієнт звертається до /login/api на цьому ж хості.
+  handle /login/api {
+    reverse_proxy http://host.docker.internal:7101 {
+      transport http {
+      }
+    }
+  }
+
+  # SPA fallback — всі маршрути віддають index.html
+  try_files {path} /index.html
+
+  file_server
+
+  # Стиснення (zstd — пріоритетно для HTTP/3, потім gzip)
+  encode zstd gzip
+
+  # TLS: "internal" = самопідписаний сертифікат Caddy CA (для локального Docker)
+  # Для production просто вкажіть доменне ім'я — Caddy отримає Let's Encrypt автоматично
+  tls internal
+
+  # Заголовки безпеки
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options  "nosniff"
+    X-Frame-Options         "SAMEORIGIN"
+    X-XSS-Protection        "1; mode=block"
+    Referrer-Policy         "strict-origin-when-cross-origin"
+    # Повідомляємо клієнтам про підтримку HTTP/3
+    Alt-Svc                 `h3=":443"; ma=86400`
+    -Server
+  }
+
+  log {
+    output stdout
+    format json
+  }
+}

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuth } from '@/composables/useAuth.js'
 import HomeView from '@/views/HomeView.vue'
 import NewsView from '@/views/NewsView.vue'
 import VacanciesView from '@/views/VacanciesView.vue'
@@ -7,6 +8,7 @@ import ServicesView from '@/views/ServicesView.vue'
 import ProjectsView from '@/views/ProjectsView.vue'
 import ContactsView from '@/views/ContactsView.vue'
 import AppealView from '@/views/AppealView.vue'
+import TokensView from '@/views/TokensView.vue'
 import NewsDetailView from '@/views/NewsDetailView.vue'
 import VacancyDetailView from '@/views/VacancyDetailView.vue'
 
@@ -28,6 +30,7 @@ const router = createRouter({
 
     { path: '/contacts', name: 'contacts', component: ContactsView },
     { path: '/appeal', name: 'appeal', component: AppealView },
+    { path: '/tokens', name: 'tokens', component: TokensView },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition
@@ -37,3 +40,10 @@ const router = createRouter({
 })
 
 export default router
+
+// Перевірка автентифікації при кожному переході між сторінками
+const { checkAuth } = useAuth()
+router.beforeEach(() => {
+  checkAuth()
+})
+

@@ -15,7 +15,6 @@
             >Проєкти</RouterLink
           >
 
-
           <RouterLink to="/news" class="header__nav-link" @click="closeMenu">Новини</RouterLink>
           <RouterLink to="/vacancies" class="header__nav-link" @click="closeMenu"
             >Вакансії</RouterLink
@@ -30,26 +29,50 @@
         </nav>
       </div>
 
-      <button
-        class="header__burger"
-        :class="{ 'header__burger--active': menuOpen }"
-        :aria-expanded="menuOpen"
-        aria-label="Відкрити меню"
-        @click="toggleMenu"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <div class="header__actions">
+        <button
+          v-if="!isAuthenticated"
+          type="button"
+          class="btn btn--primary header__login"
+          @click="handleLogin"
+        >
+          Увійти
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn--outline header__login header__logout"
+          :data-user-name="userFullName"
+          @click="handleLogout"
+        >
+          Вийти
+        </button>
+
+        <button
+          class="header__burger"
+          :class="{ 'header__burger--active': menuOpen }"
+          :aria-expanded="menuOpen"
+          aria-label="Відкрити меню"
+          @click="toggleMenu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
     </div>
   </header>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useAuth } from '@/composables/useAuth.js'
+import { useLoginModal } from '@/composables/useLoginModal.js'
 
 const isScrolled = ref(false)
 const menuOpen = ref(false)
+const { isAuthenticated, userFullName, checkAuth, logout } = useAuth()
+const { openModal } = useLoginModal()
 
 function handleScroll() {
   isScrolled.value = window.scrollY > 20
@@ -65,8 +88,19 @@ function closeMenu() {
   document.body.style.overflow = ''
 }
 
+function handleLogin() {
+  closeMenu()
+  openModal()
+}
+
+function handleLogout() {
+  closeMenu()
+  logout()
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll, { passive: true })
+  checkAuth()
   handleScroll()
 })
 
@@ -123,6 +157,14 @@ onUnmounted(() => {
   width: auto;
 }
 
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .header__nav {
   display: flex;
   align-items: center;
@@ -130,13 +172,6 @@ onUnmounted(() => {
   gap: var(--space-1);
   min-width: 0;
   flex: 1;
-}
-
-.header__separator {
-  color: var(--color-text-secondary);
-  opacity: 0.6;
-  padding: 0 var(--space-2);
-  user-select: none;
 }
 
 .header__nav-link {
@@ -154,10 +189,37 @@ onUnmounted(() => {
   background: var(--color-accent);
 }
 
-.header__cta {
-  margin-left: var(--space-4);
+.header__login {
   padding: var(--space-2) var(--space-5);
   font-size: var(--font-size-sm);
+}
+
+.header__logout {
+  position: relative;
+}
+
+.header__logout::after {
+  content: attr(data-user-name);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  z-index: 2;
+}
+
+.header__logout:hover::after,
+.header__logout:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 .header__burger {
@@ -195,13 +257,16 @@ onUnmounted(() => {
 }
 
 @media (max-width: 900px) {
-  .header__burger {
-    display: flex;
+  .header__inner {
+    gap: var(--space-4);
   }
 
-  /* hide separators in mobile drawer */
-  .header__separator {
-    display: none;
+  .header__left {
+    gap: var(--space-4);
+  }
+
+  .header__burger {
+    display: flex;
   }
 
   .header__nav {
@@ -229,13 +294,8 @@ onUnmounted(() => {
     width: 100%;
   }
 
-  .header__cta {
-    margin-left: 0;
-    margin-top: var(--space-4);
-    width: 100%;
-    justify-content: center;
-    padding: var(--space-3) var(--space-6);
-    font-size: var(--font-size-base);
+  .header__login {
+    padding: var(--space-2) var(--space-4);
   }
 }
 </style>

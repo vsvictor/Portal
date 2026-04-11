@@ -13,11 +13,26 @@
         <div v-for="project in projects" :key="project.title" class="project-card">
           <div class="project-card__header" :style="{ background: project.color }">
             <span class="project-card__icon">{{ project.icon }}</span>
-            <span class="badge badge--yellow">{{ project.status }}</span>
+            <div class="project-card__header-right">
+              <button
+                v-if="isAuthenticated"
+                class="project-card__edit"
+                :title="`Редагувати: ${project.title}`"
+                aria-label="Редагувати проєкт"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+              <span class="badge badge--yellow">{{ project.status }}</span>
+            </div>
           </div>
           <div class="project-card__body">
             <div class="project-card__meta">
-              <span class="project-card__year">{{ project.year }}</span>
+              <span class="project-card__start">Старт: {{ project.start }}</span>
               <span class="project-card__category">{{ project.category }}</span>
             </div>
             <h3 class="project-card__title">{{ project.title }}</h3>
@@ -33,63 +48,10 @@
 </template>
 
 <script setup>
-const projects = [
-  {
-    icon: '📋',
-    color: 'linear-gradient(135deg, #1a56a4, #2368c4)',
-    status: 'Діє',
-    year: '2023',
-    category: 'ERP система',
-    title: 'Єдина інформаційна система Мінекономіки',
-    description:
-      'Комплексна ERP-система для автоматизації процесів Міністерства економіки. Охоплює документообіг, планування, звітність та аналітику.',
-    tags: ['Java', 'Vue.js', 'PostgreSQL', 'Kubernetes'],
-  },
-  {
-    icon: '📊',
-    color: 'linear-gradient(135deg, #2d7d46, #38a169)',
-    status: 'Діє',
-    year: '2022',
-    category: 'Аналітика',
-    title: 'Система моніторингу держзакупівель',
-    description:
-      'Аналітична платформа для моніторингу та аналізу державних закупівель з інтеграцією Prozorro. Забезпечує прозорість витрат.',
-    tags: ['Python', 'React', 'Elasticsearch', 'Grafana'],
-  },
-  {
-    icon: '🗂️',
-    color: 'linear-gradient(135deg, #6b46c1, #805ad5)',
-    status: 'Діє',
-    year: '2022',
-    category: 'Документообіг',
-    title: 'Електронний документообіг',
-    description:
-      "Система електронного документообігу з КЕП-підписанням, маршрутизацією документів та інтеграцією з Мін'юстом.",
-    tags: ['Spring Boot', 'КЕП', 'REST API', 'Oracle'],
-  },
-  {
-    icon: '📈',
-    color: 'linear-gradient(135deg, #c05621, #dd6b20)',
-    status: 'Діє',
-    year: '2021',
-    category: 'BI',
-    title: 'Платформа бізнес-аналітики',
-    description:
-      'BI-платформа з інтерактивними дашбордами, автоматичними звітами та прогнозною аналітикою для керівництва Мінекономіки.',
-    tags: ['Apache Superset', 'dbt', 'Airflow', 'ClickHouse'],
-  },
-  {
-    icon: '🔐',
-    color: 'linear-gradient(135deg, #b83280, #d53f8c)',
-    status: 'Діє',
-    year: '2020',
-    category: 'Безпека',
-    title: 'Захищений периметр держсистем',
-    description:
-      'Комплексна система кібербезпеки з SIEM, IDS/IPS, двофакторною автентифікацією та моніторингом загроз.',
-    tags: ['SIEM', 'IDS', '2FA', 'Zero Trust'],
-  },
-]
+import { useAuth } from '@/composables/useAuth.js'
+import { projects } from '@/data/projects.js'
+
+const { isAuthenticated } = useAuth()
 </script>
 
 <style scoped>
@@ -120,6 +82,33 @@ const projects = [
   justify-content: space-between;
 }
 
+.project-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.project-card__edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-md);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.project-card__edit:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: scale(1.1);
+}
+
 .project-card__icon {
   font-size: 2.5rem;
 }
@@ -135,7 +124,7 @@ const projects = [
   margin-bottom: var(--space-3);
 }
 
-.project-card__year {
+.project-card__start {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-muted);
