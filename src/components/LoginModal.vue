@@ -177,9 +177,11 @@ async function fetchAndStoreUserProfile(userId) {
   localStorage.setItem('profile', JSON.stringify(payload))
   localStorage.setItem('auth_user', JSON.stringify(payload))
 
-  const profileName = payload?.fullName || payload?.full_name || payload?.name
-  if (profileName) {
-    localStorage.setItem('auth_user_full_name', profileName)
+  const fullName = [payload?.last_name, payload?.first_name, payload?.patronymic]
+    .filter(Boolean)
+    .join(' ')
+  if (fullName) {
+    localStorage.setItem('auth_user_full_name', fullName)
   }
 }
 

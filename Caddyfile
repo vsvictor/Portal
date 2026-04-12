@@ -38,6 +38,14 @@
     }
   }
 
+  # Logout endpoint
+  handle /logout/api {
+    reverse_proxy http://host.docker.internal:7101 {
+      transport http {
+      }
+    }
+  }
+
   # SPA fallback — всі маршрути віддають index.html
   try_files {path} /index.html
 

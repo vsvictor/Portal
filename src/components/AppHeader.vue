@@ -93,9 +93,9 @@ function handleLogin() {
   openModal()
 }
 
-function handleLogout() {
+async function handleLogout() {
   closeMenu()
-  logout()
+  await logout()
 }
 
 onMounted(() => {
@@ -201,9 +201,9 @@ onUnmounted(() => {
 .header__logout::after {
   content: attr(data-user-name);
   position: absolute;
-  left: 50%;
-  bottom: calc(100% + 8px);
-  transform: translateX(-50%) translateY(4px);
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(6px);
   background: var(--color-text-primary);
   color: var(--color-text-inverse);
   padding: 6px 10px;
@@ -213,13 +213,13 @@ onUnmounted(() => {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-fast), transform var(--transition-fast);
-  z-index: 2;
+  z-index: 1100;
 }
 
 .header__logout:hover::after,
 .header__logout:focus-visible::after {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(-50%) translateX(0);
 }
 
 .header__burger {

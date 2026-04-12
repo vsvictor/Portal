@@ -4,9 +4,23 @@ import { ref } from 'vue'
 const isAuthenticated = ref(false)
 const userFullName = ref('')
 
-const TOKEN_KEYS = ['auth_token', 'token', 'access_token', 'jwt', 'id_token', 'session_token']
+const TOKEN_KEYS = ['auth_token', 'token', 'access_token', 'refresh_token', 'jwt', 'id_token', 'session_token']
 const USER_NAME_KEYS = ['auth_user_full_name', 'user_full_name', 'full_name', 'userName', 'name']
 const USER_OBJECT_KEYS = ['auth_user', 'user', 'current_user', 'profile']
+const REFRESH_TOKEN_KEYS = ['refresh_token', 'refreshToken']
+const PERSONAL_DATA_KEYS = [
+  'profile',
+  'auth_user',
+  'user',
+  'current_user',
+  'auth_user_id',
+  'user_id',
+  'email',
+  'username',
+  'full_name',
+  'user_full_name',
+  'auth_user_full_name',
+]
 
 function getFirstStorageValue(keys) {
   for (const key of keys) {
@@ -22,7 +36,10 @@ function getFirstStorageValue(keys) {
 function getUserNameFromObject(rawValue) {
   try {
     const parsed = JSON.parse(rawValue)
-    return parsed?.fullName || parsed?.full_name || parsed?.name || ''
+    const fullName = [parsed?.last_name, parsed?.first_name, parsed?.patronymic]
+      .filter(Boolean)
+      .join(' ')
+    return fullName || parsed?.fullName || parsed?.full_name || parsed?.name || ''
   } catch {
     return ''
   }
@@ -58,6 +75,16 @@ function hydrateAuthFromUrl() {
 
   if (changed) {
     window.history.replaceState({}, '', url.toString())
+  }
+}
+
+function clearSensitiveByPattern(storage) {
+  const sensitivePattern = /(auth|token|profile|user|email|name)/i
+  for (let i = storage.length - 1; i >= 0; i--) {
+    const key = storage.key(i)
+    if (key && sensitivePattern.test(key)) {
+      storage.removeItem(key)
+    }
   }
 }
 
@@ -97,8 +124,28 @@ export function useAuth() {
     userFullName.value = 'Користувач'
   }
 
-  /** Очищає токен і скидає стан (для майбутнього logout) */
-  function logout() {
+  /** Відправляє logout на backend (якщо є refresh_token), потім очищає локальний стан */
+  async function logout() {
+    const refreshToken = getFirstStorageValue(REFRESH_TOKEN_KEYS)
+
+    if (refreshToken) {
+      try {
+        const response = await fetch('/logout/api', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        })
+
+        if (!response.ok && import.meta.env.DEV) {
+          console.warn('[useAuth] Logout API повернув', response.status)
+        }
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.warn('[useAuth] Не вдалося виконати logout API:', error)
+        }
+      }
+    }
+
     for (const key of TOKEN_KEYS) {
       localStorage.removeItem(key)
       sessionStorage.removeItem(key)
@@ -114,10 +161,18 @@ export function useAuth() {
       sessionStorage.removeItem(key)
     }
 
+    for (const key of PERSONAL_DATA_KEYS) {
+      localStorage.removeItem(key)
+      sessionStorage.removeItem(key)
+    }
+
+    // Додатковий захист: очищаємо будь-які ключі з чутливими патернами
+    clearSensitiveByPattern(localStorage)
+    clearSensitiveByPattern(sessionStorage)
+
     isAuthenticated.value = false
     userFullName.value = ''
   }
 
   return { isAuthenticated, userFullName, checkAuth, logout }
 }
-

@@ -24,6 +24,11 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/logout/api': {
+        target: authApiTarget,
+        changeOrigin: true,
+        secure: false,
+      },
       '/profile/api/': {
         target: profileApiTarget,
         changeOrigin: true,
