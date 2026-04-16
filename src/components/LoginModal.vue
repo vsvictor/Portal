@@ -149,65 +149,29 @@ function decodeJwtPayload(token) {
   }
 }
 
-async function fetchAndStoreUserProfile(userId) {
-  const encodedId = encodeURIComponent(userId)
-  const profilePath = `/profile/api/${encodedId}`
-  const directUrl = `http://127.0.0.1:7300/profile/${encodedId}`
-
-  devLog('Запит профілю:', directUrl)
-
-  const response = await fetch(profilePath)
-  const contentType = response.headers.get('content-type') || ''
-  const payload = contentType.includes('application/json')
-    ? await response.json()
-    : await response.text()
-
-  devLog(`Profile HTTP ${response.status} ${response.statusText}`)
-  devLog('Профіль:', payload)
-
-  if (!response.ok) {
-    throw new Error(`Profile HTTP ${response.status}`)
-  }
-
-  if (typeof payload === 'string') {
-    localStorage.setItem('profile', payload)
-    return
-  }
-
-  localStorage.setItem('profile', JSON.stringify(payload))
-  localStorage.setItem('auth_user', JSON.stringify(payload))
-
-  const fullName = [payload?.last_name, payload?.first_name, payload?.patronymic]
-    .filter(Boolean)
-    .join(' ')
-  if (fullName) {
-    localStorage.setItem('auth_user_full_name', fullName)
+function getLocalDemoAuthPayload(username) {
+  return {
+    access_token: `local-access-token-${Date.now()}`,
+    refresh_token: `local-refresh-token-${Date.now()}`,
+    user: {
+      id: 1,
+      email: username,
+      first_name: 'Адмін',
+      last_name: 'Системний',
+      patronymic: 'Олексійович',
+    },
   }
 }
 
 async function handleSubmit() {
   devLog('Спроба входу:', { username: email.value })
   try {
-    const response = await fetch('/login/api', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: email.value, password: password.value }),
-    })
-
-    devLog(`HTTP ${response.status} ${response.statusText}`)
-    devLog('Headers:', Object.fromEntries(response.headers.entries()))
-
-    const contentType = response.headers.get('content-type') || ''
-    const payload = contentType.includes('application/json')
-      ? await response.json()
-      : await response.text()
-
-    devLog('Відповідь сервера:', payload)
-
-    if (!response.ok) {
-      devLog('Помилка входу:', response.status, payload)
-      throw new Error(`HTTP ${response.status}`)
+    if (!email.value || !password.value) {
+      throw new Error('Порожні credentials')
     }
+
+    const payload = getLocalDemoAuthPayload(email.value)
+    devLog('Локальна відповідь авторизації:', payload)
 
     if (payload?.access_token) {
       localStorage.setItem('access_token', payload.access_token)
@@ -227,17 +191,28 @@ async function handleSubmit() {
 
       const userId = jwtPayload?.id || jwtPayload?.user_id || ''
       if (userId) {
-        try {
-          await fetchAndStoreUserProfile(userId)
-        } catch (profileError) {
-          devLog('Не вдалося отримати профіль:', profileError)
-        }
+        localStorage.setItem('auth_user_id', String(userId))
       } else {
         devLog('ID користувача не знайдено в токені')
       }
     } else {
-      localStorage.setItem('auth_user_full_name', email.value)
-      devLog('Не вдалося розпарсити JWT, використовуємо email:', email.value)
+      const profile = payload?.user || {}
+      const fullName = [profile?.last_name, profile?.first_name, profile?.patronymic]
+        .filter(Boolean)
+        .join(' ')
+
+      if (fullName) {
+        localStorage.setItem('auth_user_full_name', fullName)
+      } else {
+        localStorage.setItem('auth_user_full_name', email.value)
+      }
+
+      localStorage.setItem('profile', JSON.stringify(profile))
+      localStorage.setItem('auth_user', JSON.stringify(profile))
+      if (profile?.id) {
+        localStorage.setItem('auth_user_id', String(profile.id))
+      }
+      devLog('JWT відсутній, використано локальний профіль')
     }
 
     checkAuth()

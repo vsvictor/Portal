@@ -10,6 +10,7 @@
     </main>
     <AppFooter />
     <LoginModal />
+    <ToolsModal />
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import { onMounted } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import LoginModal from '@/components/LoginModal.vue'
+import ToolsModal from '@/components/ToolsModal.vue'
 import { useAuth } from '@/composables/useAuth.js'
 
 const { checkAuth } = useAuth()

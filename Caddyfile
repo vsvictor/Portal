@@ -30,21 +30,6 @@
 :443 {
   root * /usr/share/caddy
 
-  # Auth API (same-origin для frontend). Клієнт звертається до /login/api на цьому ж хості.
-  handle /login/api {
-    reverse_proxy http://host.docker.internal:7101 {
-      transport http {
-      }
-    }
-  }
-
-  # Logout endpoint
-  handle /logout/api {
-    reverse_proxy http://host.docker.internal:7101 {
-      transport http {
-      }
-    }
-  }
 
   # SPA fallback — всі маршрути віддають index.html
   try_files {path} /index.html

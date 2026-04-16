@@ -26,6 +26,14 @@
           <RouterLink to="/appeal" class="header__nav-link" @click="closeMenu"
             >Звернення</RouterLink
           >
+          <button
+            v-if="isAuthenticated"
+            type="button"
+            class="header__nav-link header__nav-link--button"
+            @click="handleOpenTools"
+          >
+            Інструменти
+          </button>
         </nav>
       </div>
 
@@ -68,11 +76,13 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useAuth } from '@/composables/useAuth.js'
 import { useLoginModal } from '@/composables/useLoginModal.js'
+import { useToolsModal } from '@/composables/useToolsModal.js'
 
 const isScrolled = ref(false)
 const menuOpen = ref(false)
 const { isAuthenticated, userFullName, checkAuth, logout } = useAuth()
 const { openModal } = useLoginModal()
+const { openToolsModal, closeToolsModal } = useToolsModal()
 
 function handleScroll() {
   isScrolled.value = window.scrollY > 20
@@ -93,8 +103,14 @@ function handleLogin() {
   openModal()
 }
 
+function handleOpenTools() {
+  closeMenu()
+  openToolsModal()
+}
+
 async function handleLogout() {
   closeMenu()
+  closeToolsModal()
   await logout()
 }
 
@@ -182,6 +198,13 @@ onUnmounted(() => {
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
   white-space: nowrap;
+}
+
+.header__nav-link--button {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .header__nav-link:hover {
